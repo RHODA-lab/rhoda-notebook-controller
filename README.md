@@ -33,7 +33,7 @@ bluebook-small   47h
 
 Step 2. Add your connected database.
 
-This step assumes the DBaaSInventory has been populated. (Admin or developer created instance. See the RHODA admin and developer workflows for more information.)
+This step assumes the DBaaSInventory has been populated. (Admin or developer created instance. See the RHODA admin and developer workflows for more information. https://access.redhat.com/documentation/en-us/red_hat_openshift_database_access/1/html-single/quick_start_guide/index)
 
 Follow the developer workflow for instructions on adding a connected database. Make sure to add the connected database in your notebook namespace.
 
@@ -107,4 +107,4 @@ In the output, search for "binding". You should see the following:
 ...
 ```
 
-You may consume this binding by using the pyservicebinding library. 
+You may consume this binding by using the pyservicebinding library (https://github.com/baijum/pyservicebinding). 
