@@ -1,12 +1,10 @@
 # rhoda-notebook-controller
 Recipe for RHODA and Kubeflow Notebook-Controller integration
 
-Description:
-
-These instructions assume a working knowledge of notebooks and RHODA.
+These instructions assume a basic working knowledge of openshift, jupyter notebooks and RHODA.
 
 
-Step 1. Verify your notebook-controller install.
+## Step 1. Verify your notebook-controller install.
 
 ```shell
 oc -n opendatahub get crd/notebooks.kubeflow.org
@@ -31,7 +29,7 @@ Output should be something like:
 bluebook-small   47h
 ```
 
-Step 2. Add your connected database.
+## Step 2. Add your connected database.
 
 This step assumes the DBaaSInventory has been populated. (Admin or developer created instance. See the RHODA admin and developer workflows for more information.)
 
@@ -47,18 +45,18 @@ NAME                        AGE
 jary-test-0328-ba0d22970f   41h
 ```
 
-Step 3.  Setup roles for Service Binding.
+## Step 3.  Setup roles for Service Binding.
 
 Add the following rolebinding:
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-name: dbaas-nb-edit
+  name: dbaas-nb-edit
 roleRef:
-apiGroup: rbac.authorization.k8s.io
-kind: ClusterRole
-name: notebook-controller-kubeflow-notebooks-edit
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: notebook-controller-kubeflow-notebooks-edit
 subjects:
 - kind: ServiceAccount
   name: service-binding-operator
@@ -67,7 +65,7 @@ subjects:
 
 This allows the sa service-binding-operator to modify the notebook. 
 
-Step. 4 Create the service binding manually. 
+## Step. 4 Create the service binding manually. 
 
 The service binding will be between the dbaasconnection added in step 3 and the notebook (kind:notebook, not the deployment in opendatahub or statefulset) in the notebook namespace.
 
@@ -77,24 +75,24 @@ Use the dbaasconnection name from above in the service binding:
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
-name: demo-sb
-namespace: kubeflow-user
+  name: demo-sb
+  namespace: kubeflow-user
 spec:
-application:
-group: kubeflow.org
-name: bluebook-small # select a notebook from “os get notebook -n kubeflow-user”
-resource: notebooks
-version: v1
-bindAsFiles: true # change to false if you require env vars
-detectBindingResources: true
-services:
-- group: dbaas.redhat.com
-kind: DBaaSConnection
-name: jary-test-0328-ba0d22970f  #“oc -n kubeflow-user get dbaasconnection”
-version: v1alpha1
+  application:
+    group: kubeflow.org
+    name: bluebook-small # REPLACE with a notebook from “os get notebook -n kubeflow-user”
+    resource: notebooks
+    version: v1
+  bindAsFiles: true # change to false if you require env vars
+  detectBindingResources: true
+  services:
+  - group: dbaas.redhat.com
+    kind: DBaaSConnection
+    name: jary-test-0328-ba0d22970f  # REPLACE with name of your dbaasconnection: “oc -n kubeflow-user get dbaasconnection”
+    version: v1alpha1
 ```
 
-Step 5. Verify the notebook and RHODA integration.
+## Step 5. Verify the notebook and RHODA integration.
 
 To verify your notebook can use/view the connected database binding, enter your notebook and in a cell run:
 ```shell
@@ -102,9 +100,11 @@ env
 ```
 
 In the output, search for "binding". You should see the following:
-```asciidoc
+```shell
 'SERVICE_BINDING_ROOT': '/bindings',
-...
 ```
 
 You may consume this binding by using the pyservicebinding library. 
+
+## Limitations
+Each notebook created from the notebook-controller window will require a servicebinding. New notebooks from within a Jupyter window do not require new servicebindings. 

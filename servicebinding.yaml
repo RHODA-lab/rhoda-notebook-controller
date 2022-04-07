@@ -1,18 +1,18 @@
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
-name: demo-sb
-namespace: kubeflow-user
+  name: demo-sb
+  namespace: kubeflow-user
 spec:
-application:
-group: kubeflow.org
-name: bluebook-small # select a notebook from “os get notebook -n kubeflow-user”
-resource: notebooks
-version: v1
-bindAsFiles: true # change to false if you require env vars
-detectBindingResources: true
-services:
-  - group: dbaas.redhat.com
-kind: DBaaSConnection
-name: jary-test-0328-ba0d22970f  #“oc -n kubeflow-user get dbaasconnection”
-version: v1alpha1
+  application:
+    group: kubeflow.org
+    name: bluebook-small # select a notebook from “os get notebook -n kubeflow-user”
+    resource: notebooks
+    version: v1
+  bindAsFiles: true # change to false if you require env vars
+  detectBindingResources: true
+  services:
+    - group: dbaas.redhat.com
+  kind: DBaaSConnection
+  name: jary-test-0328-ba0d22970f  #“oc -n kubeflow-user get dbaasconnection”
+  version: v1alpha1
