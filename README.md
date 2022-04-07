@@ -4,7 +4,7 @@ Recipe for RHODA and Kubeflow Notebook-Controller integration
 These instructions assume a basic working knowledge of openshift, jupyter notebooks and RHODA.
 
 
-## Step 1. Verify your notebook-controller install.
+## Step 1. Verify your notebook-controller installation.
 
 ```shell
 oc -n opendatahub get crd/notebooks.kubeflow.org
@@ -96,7 +96,7 @@ spec:
 
 To verify your notebook can use/view the connected database binding, enter your notebook and in a cell run:
 ```shell
-env
+!env
 ```
 
 In the output, search for "binding". You should see the following:
